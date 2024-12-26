@@ -18,7 +18,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Post('renew')
+  @Get('renew')
   renewToken(@Request() req: any) {
     return this.authService.renewToken(req)
     
