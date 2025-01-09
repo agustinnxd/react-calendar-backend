@@ -34,7 +34,7 @@ export class EventsController {
   
   @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.eventsService.remove(id);
+  remove(@Param('id') id: string, @Request() req) {
+    return this.eventsService.remove(id, req);
   }
 }

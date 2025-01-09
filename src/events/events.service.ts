@@ -76,7 +76,7 @@ export class EventsService {
         throw error
       }
 
-      if (error.message === "This event was posted by another user") {
+      if (error.message === "You can't update an event posted by other user") {
         throw error
       }
 
@@ -87,19 +87,31 @@ export class EventsService {
 
   }
 
-  async remove(id: string) {
+  async remove(id: string, req) {
+
+    const {_id} = req.user
+
     try {
-      const event = await this.eventModel.findByIdAndDelete(id);
+      const event = await this.eventModel.findById(id);
+      console.log(event);
       
       if (!event) {
         throw new NotFoundException('Event not found')
       };
 
-      return event
+      if ( event.user.toString() !== _id ) {
+        throw new UnauthorizedException("You can't delete an event posted by other user")
+      };
+
+      return await this.eventModel.findByIdAndDelete(id);
 
     } catch (error) {
 
       if (error.message === "Event not found") {
+        throw error
+      }
+
+      if (error.message === "You can't delete an event posted by other user") {
         throw error
       }
 
