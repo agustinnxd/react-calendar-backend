@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -53,7 +53,9 @@ export class EventsService {
 
   }
 
-  async update(id: string, updateEventDto: UpdateEventDto) {
+  async update(id: string, updateEventDto: UpdateEventDto, req) {
+
+    const {_id} = req.user
 
     try {
       const event = await this.eventModel.findByIdAndUpdate(id, updateEventDto);
@@ -62,11 +64,19 @@ export class EventsService {
         throw new NotFoundException('Event not found')
       };
 
+      if ( event.user.toString() !== _id ) {
+        throw new UnauthorizedException("This event was posted by another user")
+      }
+
       return event
 
     } catch (error) {
 
       if (error.message === "Event not found") {
+        throw error
+      }
+
+      if (error.message === "This event was posted by another user") {
         throw error
       }
 

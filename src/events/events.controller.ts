@@ -28,8 +28,8 @@ export class EventsController {
 
   @UseGuards(AuthGuard)
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-    return this.eventsService.update(id, updateEventDto);
+  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto, @Request() req) {
+    return this.eventsService.update(id, updateEventDto, req);
   }
   
   @UseGuards(AuthGuard)

@@ -5,10 +5,10 @@ import { EventsModule } from './events/events.module';
 require('dotenv').config();
 
 @Module({
-  imports: [AuthModule, 
+  imports: [AuthModule,
     MongooseModule.forRoot(process.env.MONGO_CNN), EventsModule
-    ],
+  ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
